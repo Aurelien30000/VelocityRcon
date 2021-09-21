@@ -86,6 +86,10 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         final boolean success = rconServer.getServer().getCommandManager().executeAsync(commandSender, payload).join();
         if (success) {
             String message = commandSender.flush();
+            VelocityRcon.getInstance().getLogger().info("[{}] -> Rcon executed command /{}", ctx.channel().remoteAddress(), payload);
+            if (!message.isEmpty()) {
+                VelocityRcon.getInstance().getLogger().info(message);
+            }
 
             if (!VelocityRcon.getInstance().isRconColored()) {
                 message = Utils.stripColor(message);
@@ -94,6 +98,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
             sendLargeResponse(ctx, requestId, message);
         } else {
             String message = NamedTextColor.RED + "No such command";
+            VelocityRcon.getInstance().getLogger().info(message);
 
             if (!VelocityRcon.getInstance().isRconColored()) {
                 message = Utils.stripColor(message);
